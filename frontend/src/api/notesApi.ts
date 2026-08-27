@@ -12,4 +12,5 @@ export const notesApi = {
   update: (id: number, note: NoteInput) =>
     client.put(`/notes/${id}`, { id, ...note }),
   remove: (id: number) => client.delete(`/notes/${id}`),
+  summarize: (id: number) => client.post<Note>(`/notes/${id}/summarize`).then((res) => res.data),
 };

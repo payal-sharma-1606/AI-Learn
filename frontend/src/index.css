@@ -74,6 +74,16 @@ a {
   background: var(--danger);
 }
 
+.button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.loading {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
 .note-list {
   list-style: none;
   padding: 0;

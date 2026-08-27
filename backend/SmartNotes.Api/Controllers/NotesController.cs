@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartNotes.Api.Data;
 using SmartNotes.Api.Models;
+using SmartNotes.Api.Services;
 
 namespace SmartNotes.Api.Controllers;
 
@@ -10,10 +11,12 @@ namespace SmartNotes.Api.Controllers;
 public class NotesController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IAiService _aiService;
 
-    public NotesController(AppDbContext context)
+    public NotesController(AppDbContext context, IAiService aiService)
     {
         _context = context;
+        _aiService = aiService;
     }
 
     [HttpGet]
@@ -66,6 +69,22 @@ public class NotesController : ControllerBase
 
         await _context.SaveChangesAsync();
         return NoContent();
+    }
+
+    [HttpPost("{id}/summarize")]
+    public async Task<ActionResult<Note>> SummarizeNote(int id)
+    {
+        var note = await _context.Notes.FindAsync(id);
+        if (note == null)
+        {
+            return NotFound();
+        }
+
+        note.Summary = await _aiService.SummarizeAsync(note.Content);
+        note.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+        return note;
     }
 
     [HttpDelete("{id}")]
