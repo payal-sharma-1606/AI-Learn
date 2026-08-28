@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { notesApi } from '../api/notesApi';
+import { apiErrorMessage, notesApi } from '../api/notesApi';
 import type { Note } from '../types';
 
 export default function ViewNote() {
@@ -33,8 +33,8 @@ export default function ViewNote() {
     try {
       const updated = await notesApi.summarize(note.id);
       setNote(updated);
-    } catch {
-      setSummarizeError('Failed to generate summary.');
+    } catch (err) {
+      setSummarizeError(apiErrorMessage(err, 'Failed to generate summary.'));
     } finally {
       setSummarizing(false);
     }

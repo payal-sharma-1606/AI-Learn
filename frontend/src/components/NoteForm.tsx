@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { apiErrorMessage } from '../api/notesApi';
 import type { NoteInput } from '../types';
 
 interface NoteFormProps {
@@ -24,8 +25,8 @@ export default function NoteForm({ initial, submitLabel, onSubmit }: NoteFormPro
     setSaving(true);
     try {
       await onSubmit({ title, content, tags });
-    } catch {
-      setError('Failed to save note.');
+    } catch (err) {
+      setError(apiErrorMessage(err, 'Failed to save note.'));
     } finally {
       setSaving(false);
     }
