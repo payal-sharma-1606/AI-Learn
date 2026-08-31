@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using SmartNotes.Api.Exceptions;
+using SmartNotes.Api.Interfaces;
 using SmartNotes.Api.Data;
 using SmartNotes.Api.Services;
 

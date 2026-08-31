@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SmartNotes.Api.Exceptions;
+using SmartNotes.Api.Interfaces;
 using SmartNotes.Api.Data;
 using SmartNotes.Api.Models;
 using SmartNotes.Api.Services;
@@ -112,6 +114,40 @@ public class NotesController : ControllerBase
         note.UpdatedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync(cancellationToken);
         return note;
+    }
+
+    [HttpPost("{id}/suggest-tags")]
+    public async Task<ActionResult<TagSuggestionResponse>> SuggestTags(int id, CancellationToken cancellationToken)
+    {
+        var note = await _context.Notes.FindAsync([id], cancellationToken);
+        if (note == null)
+        {
+            return NotFound();
+        }
+
+        if (string.IsNullOrWhiteSpace(note.Content))
+        {
+            return Problem(
+                title: "Nothing to tag",
+                detail: "This note has no content to suggest tags from.",
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+
+        try
+        {
+            var tags = await _aiService.SuggestTagsAsync(note.Content, cancellationToken);
+            return new TagSuggestionResponse { Tags = tags };
+        }
+        catch (AiServiceException ex)
+        {
+            _logger.LogError(ex, "Could not suggest tags for note {NoteId}.", id);
+            return Problem(
+                title: "Tag suggestions unavailable",
+                detail: ex.Message,
+                statusCode: ex.IsTransient
+                    ? StatusCodes.Status503ServiceUnavailable
+                    : StatusCodes.Status502BadGateway);
+        }
     }
 
     [HttpDelete("{id}")]
