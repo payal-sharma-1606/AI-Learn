@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { apiErrorMessage } from '../api/notesApi';
+import TagSuggestions from './TagSuggestions';
+import { toggleTag } from '../utils/tags';
 import type { NoteInput } from '../types';
 
 interface NoteFormProps {
   initial?: NoteInput;
   submitLabel: string;
   onSubmit: (note: NoteInput) => Promise<void>;
+  /** Set when editing an existing note; enables AI tag suggestions. */
+  noteId?: number;
 }
 
-export default function NoteForm({ initial, submitLabel, onSubmit }: NoteFormProps) {
+export default function NoteForm({ initial, submitLabel, onSubmit, noteId }: NoteFormProps) {
   const [title, setTitle] = useState(initial?.title ?? '');
   const [content, setContent] = useState(initial?.content ?? '');
   const [tags, setTags] = useState(initial?.tags ?? '');
@@ -47,6 +51,15 @@ export default function NoteForm({ initial, submitLabel, onSubmit }: NoteFormPro
         Tags (comma-separated)
         <input value={tags} onChange={(e) => setTags(e.target.value)} />
       </label>
+      {noteId === undefined ? (
+        <p className="hint">Save the note first to get AI tag suggestions.</p>
+      ) : (
+        <TagSuggestions
+          noteId={noteId}
+          tags={tags}
+          onToggle={(tag) => setTags((current) => toggleTag(current, tag))}
+        />
+      )}
       <button className="button" type="submit" disabled={saving}>
         {saving ? 'Saving...' : submitLabel}
       </button>

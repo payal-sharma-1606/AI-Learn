@@ -31,6 +31,7 @@ export default function EditNote() {
     <div>
       <h1>Edit Note</h1>
       <NoteForm
+        noteId={note.id}
         initial={{ title: note.title, content: note.content, tags: note.tags }}
         submitLabel="Save Changes"
         onSubmit={handleSubmit}

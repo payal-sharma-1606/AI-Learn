@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Note, NoteInput } from '../types';
+import type { Note, NoteInput, TagSuggestionResponse } from '../types';
 
 const client = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -32,4 +32,6 @@ export const notesApi = {
   update: (id: number, note: NoteInput) => client.put(`/notes/${id}`, note),
   remove: (id: number) => client.delete(`/notes/${id}`),
   summarize: (id: number) => client.post<Note>(`/notes/${id}/summarize`).then((res) => res.data),
+  suggestTags: (id: number) =>
+    client.post<TagSuggestionResponse>(`/notes/${id}/suggest-tags`).then((res) => res.data.tags),
 };

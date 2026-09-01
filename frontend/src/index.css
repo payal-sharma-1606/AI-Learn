@@ -146,3 +146,54 @@ a {
 .error {
   color: var(--danger);
 }
+
+.hint {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin: 0;
+}
+
+.button.subtle {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--border);
+}
+
+.button.subtle:hover {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.tag-suggestions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  font: inherit;
+  font-size: 13px;
+  color: var(--text);
+  background: transparent;
+  border: 1px dashed var(--border);
+  border-radius: 999px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+}
+
+.chip.accepted {
+  border-style: solid;
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+}

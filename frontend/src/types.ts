@@ -9,3 +9,8 @@ export interface Note {
 }
 
 export type NoteInput = Pick<Note, 'title' | 'content' | 'tags'>;
+
+/** Response of POST /api/notes/{id}/suggest-tags. Suggestions are never auto-saved. */
+export interface TagSuggestionResponse {
+  tags: string[];
+}
